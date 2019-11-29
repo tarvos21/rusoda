@@ -247,6 +247,18 @@ impl Article {
         blog_articles
     }
 
+    //获得用户所有文章
+    pub fn get_all_articles_by_user(size: i64) -> Vec<BlogArticleForList> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "article.id, article.title, article.created_time, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("WHERE article.stype = * ORDER BY created_time DESC LIMIT {}", size);
+        let blog_articles = db_select!(em, head_clause, from_clause, &rest_clause, BlogArticleForList);
+
+        blog_articles
+    }
+
     pub fn get_latest_full_blog_articles(size: i64) -> Vec<Article> {
         let em = db::get_db();
         // need to alias names
